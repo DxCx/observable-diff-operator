@@ -35,7 +35,7 @@ instead of converting observables.
 
 ## Operators:
 ### toDiff
-#### signature: `toDiff(): Observable<IObservableDiff>`
+#### signature: `toDiffObserver<T>(Observer<IObservableDiff>): Observer<T>`
 #### Description
 
 toDiff operator is used to convert output of an obsersvable stream,
@@ -54,7 +54,7 @@ const subscribe = example.subscribe(val => console.log(val));
 ```
 
 ### fromDiff
-##### signature: `fromDiff(): Observable<any>`
+##### signature: `fromDiffObserver<T>(Observer<T>): Observable<IObservableDiff>`
 #### Description
 
 fromDiff operator is used to convert output of an diff obsersvable stream (see toDiff above),
