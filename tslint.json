@@ -1,0 +1,9 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "quotemark": [true, "single", "avoid-escape"],
+    "interface-name": false,
+    "max-classes-per-file": [true, 2],
+    "object-literal-key-quotes": false
+  }
+}
