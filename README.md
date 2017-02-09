@@ -4,10 +4,34 @@
 [![Coverage Status](https://coveralls.io/repos/github/DxCx/observable-diff-operator/badge.svg?branch=master)](https://coveralls.io/github/DxCx/observable-diff-operator?branch=master)
 [![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
 
-this package adds toDiff/fromDiff operators for [RxJs 5](https://github.com/ReactiveX/rxjs).
+this is fromDiff / toDiff logic implementation for observables.
 
 those operators are meant for sending observables over network:
 ![Example diagram](./diagram.png)
+
+## Wrapping observers for Examples
+to use the logic, you will need to simply wrap observables
+using your observables implementation, for example, RxJs:
+
+```typescript
+import { Observable } from 'rxjs';
+import { fromDiffObserver, IObservableDiff, toDiffObserver } from 'observable-diff-operator';
+
+export function fromDiffWrap<T>(obs: Observable<IObservableDiff>): Observable<T> {
+  return new Observable((observer) => {
+    return obs.subscribe(fromDiffObserver(observer));
+  });
+}
+
+export function toDiffWrap<T>(obs: Observable<T>): Observable<IObservableDiff> {
+  return new Observable((observer) => {
+    return obs.subscribe(toDiffObserver(observer));
+  });
+}
+```
+
+NOTE: for `rxjs`, [rxjs-diff-operator](https://www.github.com/DxCx/rxjs-diff-operator) will give the same result but as embeded operator
+instead of converting observables.
 
 ## Operators:
 ### toDiff
@@ -24,7 +48,7 @@ this operator is inteded to be used on the server.
 //emit (1,2,3,4,5)
 const source = Rx.Observable.from([1,2,3,4,5]);
 //add 10 to each value
-const example = source.toDiff();
+const example = toDiffWrap(source);
 //output: { type: "init", payload: 1, isObject: false }, { type: "update", payload: 2 }, ...
 const subscribe = example.subscribe(val => console.log(val));
 ```
@@ -43,7 +67,7 @@ this operator is inteded to be used on the client.
 //emit diff information
 const source = Rx.Observable.from([{ type: "init", payload: 1, isObject: false }, { type: "update", payload: 2 }, { type: "complete" }]);
 //add 10 to each value
-const example = source.fromDiff();
+const example = fromDiffWrap(source);
 //output: 1, 2
 const subscribe = example.subscribe(val => console.log(val));
 ```
