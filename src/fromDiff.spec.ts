@@ -2,12 +2,13 @@
 
 import 'jest';
 import { Observable } from 'rxjs';
-import './index';
+import { fromDiffObserver } from './fromDiff';
 import { IObservableDiff } from './interfaces';
+import { fromDiffWrap } from './testHelper';
 
 describe('fromDiff operator', () => {
   it('Should be pass sanity', () => {
-    expect(typeof (<any> Observable.prototype).fromDiff).toBe('function');
+    expect(typeof fromDiffObserver).toBe('function');
   });
 
   it('emits basic changes', () => {
@@ -31,7 +32,7 @@ describe('fromDiff operator', () => {
       'type': 'complete',
     });
 
-    return obs.fromDiff().bufferCount(6).toPromise().then((msgs) => {
+    return fromDiffWrap(obs).bufferCount(6).toPromise().then((msgs) => {
       expect(typeof msgs).toBe('object');
       expect(Array.isArray(msgs)).toBe(true);
       expect(msgs).toMatchSnapshot();
@@ -97,7 +98,7 @@ describe('fromDiff operator', () => {
       'type': 'complete',
     });
 
-    return obs.fromDiff().bufferCount(6).toPromise().then((msgs) => {
+    return fromDiffWrap(obs).bufferCount(6).toPromise().then((msgs) => {
       expect(typeof msgs).toBe('object');
       expect(Array.isArray(msgs)).toBe(true);
       expect(msgs).toMatchSnapshot();
@@ -128,7 +129,7 @@ describe('fromDiff operator', () => {
       'type': 'error',
     });
 
-    return obs.fromDiff().toPromise().then((msgs) => {
+    return fromDiffWrap(obs).toPromise().then((msgs) => {
       throw new Error('shouldn\'t get here because of the promise');
     }, (e: Error) => {
       expect(() => { throw e; }).toThrow('testing errors');
@@ -153,7 +154,7 @@ describe('fromDiff operator', () => {
       'type': 'error',
     });
 
-    return obs.fromDiff().toPromise().then((msgs) => {
+    return fromDiffWrap(obs).toPromise().then((msgs) => {
       throw new Error('shouldn\'t get here because of the promise');
     }, (e: Error) => {
       expect(() => { throw e; }).toThrow('Init message was not emitted');
@@ -190,7 +191,7 @@ describe('fromDiff operator', () => {
       'type': 'error',
     });
 
-    return obs.fromDiff().toPromise().then((msgs) => {
+    return fromDiffWrap(obs).toPromise().then((msgs) => {
       throw new Error('shouldn\'t get here because of the promise');
     }, (e: Error) => {
       expect(() => { throw e; }).toThrow('Init message emitted while in sequance');
@@ -212,7 +213,7 @@ describe('fromDiff operator', () => {
       'type': undefined,
     });
 
-    return obs.fromDiff().toPromise().then((msgs) => {
+    return fromDiffWrap(obs).toPromise().then((msgs) => {
       throw new Error('shouldn\'t get here because of the promise');
     }, (e: Error) => {
       expect(() => { throw e; }).toThrow('unexpected message');
@@ -234,7 +235,7 @@ describe('fromDiff operator', () => {
       'type': 'something',
     });
 
-    return obs.fromDiff().toPromise().then((msgs) => {
+    return fromDiffWrap(obs).toPromise().then((msgs) => {
       throw new Error('shouldn\'t get here because of the promise');
     }, (e: Error) => {
       expect(() => { throw e; }).toThrow('unexpected message');
@@ -244,7 +245,7 @@ describe('fromDiff operator', () => {
   it('throws when input is malformed', () => {
     let obs: Observable<any> = Observable.of<any>(123);
 
-    return obs.fromDiff().toPromise().then((msgs) => {
+    return fromDiffWrap(obs).toPromise().then((msgs) => {
       throw new Error('shouldn\'t get here because of the promise');
     }, (e: Error) => {
       expect(() => { throw e; }).toThrow('Init message was not emitted.');

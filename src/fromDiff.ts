@@ -1,96 +1,80 @@
 import * as clone from 'clone';
 import { applyChange } from 'deep-diff';
 import * as deepFreeze from 'deep-freeze';
-import { Observable } from 'rxjs/Observable';
-import { Operator } from 'rxjs/Operator';
-import { Subscriber } from 'rxjs/Subscriber';
 import { IObservableDiff } from './interfaces';
+import { Observer } from './interfaces';
 
-export function fromDiff<T extends IObservableDiff, R>(): Observable<R> {
-  return this.lift(new FromDiffOperator<T>());
-}
-
-export class FromDiffOperator<T extends IObservableDiff> implements Operator<T, T> {
-  public call(subscriber: Subscriber<T>, source: any): any {
-    return source.subscribe(new FromDiffSubscriber(subscriber));
-  }
-}
-
-class FromDiffSubscriber<T extends IObservableDiff> extends Subscriber<T> {
-  private count: number = 0;
-  private lastValue: any;
-  private isObject: boolean = false;
-
-  constructor(destination: Subscriber<T>) {
-    super(destination);
-  }
-
-  /** onNext hook. */
-  protected _next(value: IObservableDiff) {
-    /* is this the first message? */
-    if ( 0 === this.count ) {
-      /* start init sequance. */
-      this._process_init(value);
-    } else {
-      /* general message processing */
-      this._process_diff(value);
-    }
-    this.count ++;
-  }
+export function fromDiffObserver<T>(observer: Observer<T>): Observer<IObservableDiff> {
+  let _count: number = 0;
+  let _lastValue: any;
+  let _isObject: boolean = false;
 
   /** emits a new value, while saving it for patching in the future */
-  private _emitValue(newValue: any) {
-    this.lastValue = clone(newValue);
-    if ( this.isObject ) {
-      deepFreeze(this.lastValue);
+  function _emitValue(newValue: any) {
+    _lastValue = clone(newValue);
+    if ( _isObject ) {
+      deepFreeze(_lastValue);
     }
 
-    this.destination.next(this.lastValue);
+    observer.next(_lastValue);
   }
 
   /** general message handler */
-  private _process_diff({type, payload}: IObservableDiff) {
+  function _process_diff({type, payload}: IObservableDiff) {
     switch ( type ) {
       case 'init':
         /* init message cannot be sent more then once. */
-        this.destination.error(new Error('Init message emitted while in sequance'));
+        observer.error(new Error('Init message emitted while in sequance'));
         break;
       case 'update':
         /* update message */
         let copyValue = payload;
-        if ( this.isObject ) {
-          copyValue = clone(this.lastValue);
+        if ( _isObject ) {
+          copyValue = clone(_lastValue);
           payload.forEach((changeset: any) => {
             applyChange(copyValue, true, changeset);
           });
         };
-        this._emitValue(copyValue);
+        _emitValue(copyValue);
         break;
- case 'error':
-   /* error message, throw it */
-   this.destination.error(new Error(payload));
-   break;
- case 'complete':
-   /* complete message, completes the observable */
-   this.destination.complete();
-   break;
- default:
-   this.destination.error(new Error('unexpected message'));
-   break;
-    }
+     case 'error':
+       /* error message, throw it */
+       observer.error(new Error(payload));
+       break;
+     case 'complete':
+       /* complete message, completes the observable */
+       observer.complete();
+       break;
+     default:
+       observer.error(new Error('unexpected message'));
+       break;
+      }
   }
 
   /** init message handler */
-  private _process_init({type, payload, isObject}: IObservableDiff) {
+  function _process_init({type, payload, isObject}: IObservableDiff) {
     /* if the first message is not init message, throw error. */
     if ( type !== 'init') {
-      this.destination.error(new Error('Init message was not emitted.'));
+      observer.error(new Error('Init message was not emitted.'));
       return;
     }
-    this.isObject = isObject;
+    _isObject = isObject;
 
-    this._emitValue(payload);
+    _emitValue(payload);
   }
-}
 
-Observable.prototype.fromDiff = fromDiff;
+  return {
+    complete: observer.complete,
+    error: observer.error,
+    next: (value: IObservableDiff) => {
+      if ( 0 === _count ) {
+        /* start init sequance. */
+        _process_init(value);
+      } else {
+        /* general message processing */
+        _process_diff(value);
+      }
+      _count ++;
+    },
+  };
+}

@@ -3,17 +3,18 @@
 import 'jest';
 
 import { Observable } from 'rxjs';
-import './index';
+import { toDiffWrap } from './testHelper';
+import { toDiffObserver } from './toDiff';
 
 describe('toDiff operator', () => {
   it('Should be pass sanity', () => {
-    expect(typeof (<any> Observable.prototype).toDiff).toBe('function');
+    expect(typeof toDiffObserver).toBe('function');
   });
 
   it('emits basic changes', () => {
     let obs: Observable<number> = Observable.of(1, 2, 3, 4, 5);
 
-    return obs.toDiff().bufferCount(6).toPromise().then((msgs) => {
+    return toDiffWrap(obs).bufferCount(6).toPromise().then((msgs) => {
       expect(typeof msgs).toBe('object');
       expect(msgs[0].type).toBe('init');
       expect(msgs[5].type).toBe('complete');
@@ -24,7 +25,7 @@ describe('toDiff operator', () => {
   it('emits object changes', () => {
     let obs: Observable<{ value: number }> = Observable.of(1, 2, 3, 4, 5).map((v) => ({ value: v}));
 
-    return obs.toDiff().bufferCount(6).toPromise().then((msgs) => {
+    return toDiffWrap(obs).bufferCount(6).toPromise().then((msgs) => {
       expect(typeof msgs).toBe('object');
       expect(msgs[0].type).toBe('init');
       expect(msgs[5].type).toBe('complete');
@@ -42,7 +43,7 @@ describe('toDiff operator', () => {
         return { value: v };
       });
 
-    return obs.toDiff().bufferCount(6).toPromise().then((msgs) => {
+    return toDiffWrap(obs).bufferCount(6).toPromise().then((msgs) => {
       expect(typeof msgs).toBe('object');
       expect(msgs[0].type).toBe('init');
       expect(msgs[2].type).toBe('error');

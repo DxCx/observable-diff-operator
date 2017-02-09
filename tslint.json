@@ -4,6 +4,7 @@
     "quotemark": [true, "single", "avoid-escape"],
     "interface-name": false,
     "max-classes-per-file": [true, 2],
-    "object-literal-key-quotes": false
+    "object-literal-key-quotes": false,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
   }
 }
