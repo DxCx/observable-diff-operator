@@ -80,7 +80,7 @@ var bundle_opts = {
 
   // name of module likein package.json
   // - used to declare module & import/require
-  name: 'rxjs-diff-operator',
+  name: 'observable-diff-operator',
   // path to entry-point (generated .d.ts file for main module)
   // if you want to load all .d.ts files from a path recursively you can use "path/project/**/*.d.ts"
   //  ^ *** Experimental, TEST NEEDED, see "All .d.ts files" section

@@ -1,5 +1,5 @@
 {
-  "name": "rxjs-diff-operator",
+  "name": "observable-diff-operator",
   "version": "0.1.0",
   "description": "toDiff/fromDiff operators for RxJs 5 - useful for sending observables over network.",
   "main": "dist/main.js",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DxCx/rxjs-diff-operator.git"
+    "url": "git+https://github.com/DxCx/observable-diff-operator.git"
   },
   "keywords": [
     "rxjs",
@@ -33,9 +33,9 @@
   "author": "Hagai Cohen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/DxCx/rxjs-diff-operator/issues"
+    "url": "https://github.com/DxCx/observable-diff-operator/issues"
   },
-  "homepage": "https://github.com/DxCx/rxjs-diff-operator#readme",
+  "homepage": "https://github.com/DxCx/observable-diff-operator#readme",
   "devDependencies": {
     "@types/clone": "^0.1.30",
     "@types/deep-diff": "0.0.30",
