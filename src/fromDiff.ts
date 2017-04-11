@@ -34,7 +34,7 @@ export function fromDiffObserver<T>(observer: Observer<T>): Observer<IObservable
           payload.forEach((changeset: any) => {
             applyChange(copyValue, true, changeset);
           });
-        };
+        }
         _emitValue(copyValue);
         break;
      case 'error':

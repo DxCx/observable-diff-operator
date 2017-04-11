@@ -12,7 +12,7 @@ describe('fromDiff operator', () => {
   });
 
   it('emits basic changes', () => {
-    let obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
+    const obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
       'isObject': false,
       'payload': 1,
       'type': 'init',
@@ -40,7 +40,7 @@ describe('fromDiff operator', () => {
   });
 
   it('emits objects changes', () => {
-    let obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
+    const obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
       'isObject': true,
       'payload': {
         'value': 1,
@@ -106,7 +106,7 @@ describe('fromDiff operator', () => {
   });
 
   it('throws when get error', () => {
-    let obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
+    const obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
       'isObject': true,
       'payload': {
         'value': 1,
@@ -137,7 +137,7 @@ describe('fromDiff operator', () => {
   });
 
   it('throws when missing init message', () => {
-    let obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
+    const obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
       'payload': [
         {
           'kind': 'E',
@@ -162,7 +162,7 @@ describe('fromDiff operator', () => {
   });
 
   it('throws when init message repeated', () => {
-    let obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
+    const obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
       'isObject': true,
       'payload': {
         'value': 1,
@@ -199,7 +199,7 @@ describe('fromDiff operator', () => {
   });
 
   it('throws when no type provided', () => {
-    let obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
+    const obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
       'isObject': true,
       'payload': {
         'value': 1,
@@ -221,7 +221,7 @@ describe('fromDiff operator', () => {
   });
 
   it('throws when no type malformed', () => {
-    let obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
+    const obs: Observable<IObservableDiff> = Observable.of<IObservableDiff>({
       'isObject': true,
       'payload': {
         'value': 1,
@@ -243,7 +243,7 @@ describe('fromDiff operator', () => {
   });
 
   it('throws when input is malformed', () => {
-    let obs: Observable<any> = Observable.of<any>(123);
+    const obs: Observable<any> = Observable.of<any>(123);
 
     return fromDiffWrap(obs).toPromise().then((msgs) => {
       throw new Error('shouldn\'t get here because of the promise');

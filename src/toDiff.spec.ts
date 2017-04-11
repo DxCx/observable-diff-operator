@@ -12,7 +12,7 @@ describe('toDiff operator', () => {
   });
 
   it('emits basic changes', () => {
-    let obs: Observable<number> = Observable.of(1, 2, 3, 4, 5);
+    const obs: Observable<number> = Observable.of(1, 2, 3, 4, 5);
 
     return toDiffWrap(obs).bufferCount(6).toPromise().then((msgs) => {
       expect(typeof msgs).toBe('object');
@@ -23,7 +23,7 @@ describe('toDiff operator', () => {
   });
 
   it('emits object changes', () => {
-    let obs: Observable<{ value: number }> = Observable.of(1, 2, 3, 4, 5).map((v) => ({ value: v}));
+    const obs: Observable<{ value: number }> = Observable.of(1, 2, 3, 4, 5).map((v) => ({ value: v}));
 
     return toDiffWrap(obs).bufferCount(6).toPromise().then((msgs) => {
       expect(typeof msgs).toBe('object');
@@ -34,7 +34,7 @@ describe('toDiff operator', () => {
   });
 
   it('emits errors as well', () => {
-    let obs: Observable<{ value: number }> = Observable.of(1, 2, 3, 4, 5)
+    const obs: Observable<{ value: number }> = Observable.of(1, 2, 3, 4, 5)
       .map((v: number, i: number) => {
         if ( i === 2 ) {
           throw new Error('testing errors');
