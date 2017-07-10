@@ -43,7 +43,7 @@
     "@types/deep-diff": "0.0.30",
     "@types/deep-freeze": "0.0.29",
     "@types/jest": "^19.2.2",
-    "@types/node": "^7.0.12",
+    "@types/node": "^8.0.10",
     "browserify": "^14.3.0",
     "delete-empty": "^1.0.1",
     "dts-bundle": "^0.7.2",
